@@ -1,16 +1,18 @@
 # ALGORITHMS
+
 <hr>
+
 ## READY FOR THE HACKTOBER FEST 😈😈
 
 ## ABOUT THIS PROGRAM
 
 The aim of this program is to help the participants explore the Open Source world and take their first step towards programming and contributing.
 
-If you are starting your journey in Free and Open Source Software Development, then this is the right place. 😄 This program is also ideal to coding enthusiasts who would like to challenge their problem solving skills.
+This is a great repository for the Beginers in the Open Source and the beginers in the virtual world of computer science 🤩🤩
 
-[REGISTER HERE](https://hacktoberfest.digitalocean.com/) to win\* a limited edition Hacktoberfest 👕Tee-shirt or a 🎍plant.
+[REGISTER HERE](https://hacktoberfest.digitalocean.com/) to win a limited edition Hacktoberfest 👕Tee-shirt or a 🎍plant. But you need to hurry!🥶
 
-Start contributing!😁😁😁
+So, Start contributing!😁😁😁
 
 <hr>
 ## WHAT ARE ALGORITHMS 🤓🤓
@@ -25,7 +27,7 @@ An encryption algorithm transforms data according to specified actions to protec
 </p>
 
 
-## Some Usefull Resources🤖🤖
+## SOME USEFULL RESOURCES🤖🤖
 
 For all the young awesome developers, here are some useful resources:
 
