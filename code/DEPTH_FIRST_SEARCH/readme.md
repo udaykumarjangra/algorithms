@@ -1,6 +1,6 @@
 ## DEPTH FIRST SEARCH
 ### BY INDERPREET SINGH
-#### [CO18325](https://github.com/CO18325)
+#### GITHUB : [CO18325](https://github.com/CO18325)
 
 <hr>
 
