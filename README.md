@@ -15,6 +15,7 @@ This is a great repository for the Beginers in the Open Source and the beginers 
 So, Start contributing!😁😁😁
 
 <hr>
+
 ## WHAT ARE ALGORITHMS 🤓🤓
 
 <p>
