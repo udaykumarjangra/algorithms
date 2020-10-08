@@ -1,0 +1,700 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <process.h>
+#include <conio.h>
+#include <string.h>
+
+struct node
+{
+    struct node *prev;
+    char  aadhar_id[13], person_name[30], father_name[30], mother_name[30], date_birth[12], gender[15];
+    struct node *next;
+};
+typedef struct node Doubly;
+Doubly *lp=NULL, *rp=NULL, *temp_lp=NULL, *temp_rp=NULL;
+int num=0, creation=1, temp_var=1;
+
+void choices(int);
+void create_node(Doubly**);
+void display_node(Doubly**);
+void insert_node(Doubly**);
+Doubly* insert_user_view();
+void delete_node(Doubly**);
+void update_node(Doubly**);
+void search_node(Doubly**);
+void search_list(Doubly*);
+int sort_node(Doubly**);
+void remove_duplicate(Doubly **s);
+int valid_id(char[]);
+int valid_date(char[]);
+
+int main()
+{
+    int option;
+    while(1)
+    {
+        system("cls");
+        printf("\n <-- Doubly Linked List Program --> \n");
+        printf("\n <-- Made By: Himanshu Setia , Roll No.: CO19328 --> \n");
+        printf("\n1. Create person node");
+        printf("\n2. Display all person records");
+        printf("\n3. Insert person record");
+        printf("\n4. Delete person record");
+        printf("\n5. Update person record");
+        printf("\n6. Search person record");
+        printf("\n7. Sort all record");
+        printf("\n8. Exit");
+        printf("\n\nPlease enter the required option : ");
+        scanf("%d",&option);
+        choices(option);
+     }
+    return 0;
+}
+void choices(int option)/*Choice function for switching cases as per input given by main function*/
+{
+    switch(option)
+    {
+    case 1:
+            create_node(&lp);
+            remove_duplicate(&lp);
+            break;
+    case 2:
+            display_node(&lp);
+            break;
+    case 3:
+            insert_node(&lp);
+            remove_duplicate(&lp);
+            break;
+    case 4:
+            delete_node(&lp);
+            break;
+    case 5:
+            update_node(&lp);
+            remove_duplicate(&lp);
+            break;
+    case 6:
+            search_node(&lp);
+            break;
+    case 7:
+            sort_node(&lp);
+            break;
+    case 8:
+            exit(0);
+    default:
+            printf("\nInvalid Option \nPlease enter correct option");
+            break;
+    }
+    getch();
+}
+void create_node(Doubly **s)
+{
+    Doubly *ptr=NULL; int vp=0,hs=0;
+    if(creation==1){
+        *s = (Doubly*)malloc(sizeof(Doubly));
+        ptr=*s;
+        ptr->prev = NULL;
+    }
+    else{
+        ptr=*s;
+        while(ptr->next!=NULL)
+            ptr = ptr->next;
+        ptr->next = (Doubly*)malloc(sizeof(Doubly));
+        ptr->next->prev = ptr;
+        ptr = ptr->next;
+    }
+    char ch;
+    do
+    {
+        fflush(stdin);
+        printf("\n\n**************************************************************************************************\n");
+        printf("\nEnter Details of Person :- \n");
+        printf("\nEntry No.: %d",num+1);
+        JUNCTION:
+        printf("\nPerson Aadhaar Card number : ");
+        gets(ptr->aadhar_id);
+        vp = valid_id(ptr->aadhar_id); if(vp==0){goto JUNCTION;}
+        printf("\nPerson Name                : ");
+        strupr(gets(ptr->person_name));
+        printf("\nPerson's Father Name       : ");
+        strupr(gets(ptr->father_name));
+        printf("\nPerson's Mother Name       : ");
+        strupr(gets(ptr->mother_name));
+        POINT:
+        printf("\nPerson's Date of Birth\n(Date format: dd/mm/yyyy or dd.mm.yyyy)     : ");
+        gets(ptr->date_birth);
+        hs = valid_date(ptr->date_birth); if(hs==0){goto POINT;}
+        printf("\nPerson's Gender\n(Male/Female)         : ");
+        strupr(gets(ptr->gender));
+        FORMATION:
+        printf("\nDo you want to enter next person's information (y/n) : ");
+        fflush(stdin);
+        ch = getchar();
+        if(ch=='y' || ch=='Y')
+        {
+            ptr->next = (Doubly*)malloc(sizeof(Doubly));
+            ptr->next->prev = ptr;
+            ptr = ptr->next;
+        }
+        else if(ch!='y' && ch!='Y' && ch!='n' && ch!='N' )
+        {
+            printf("\nInvalid Character"); goto FORMATION;
+        }
+        num+=1;
+    }while(ch=='y' || ch=='Y');
+    ptr->next = NULL;
+    rp = ptr;     //for right pointer
+    printf("\nTotal number of entries are : %d",num);
+    creation+=1;
+}
+void display_node(Doubly **s)
+{
+    Doubly *ptr=*s; int show=1;
+    printf("\n\n**************************************************************************************************\n");
+    if(ptr==NULL)
+        printf("\nDoubly linked list is empty");
+    else
+    {
+        printf("\nThe Doubly Linked List is as followed:\n");
+        while(ptr!=NULL)
+            {
+                printf("\nPerson No.            :  %d",show);
+                printf("\nPerson Aadhaar number :  %s",ptr->aadhar_id);
+                printf("\nPerson Name           :  %s",ptr->person_name);
+                printf("\nFather Name           :  %s",ptr->father_name);
+                printf("\nMother Name           :  %s",ptr->mother_name);
+                printf("\nDate of Birth         :  %s",ptr->date_birth);
+                printf("\nGender                :  %s",ptr->gender);
+                printf("\n\n**************************************************************************************************\n");
+                ptr = ptr->next;
+                show+=1;
+            }
+        printf("\n");
+    }
+}
+void insert_node(Doubly **s)
+{
+    int opt;
+    Doubly *ptr=NULL;
+    printf("\n\n**************************************************************************************************\n");
+    printf("\n1. Insert person entry at beginning of doubly linked list\n");
+    printf("2. Insert person entry at specific position in doubly linked list\n");
+    printf("3. Insert person entry at end of doubly linked list\n");
+    printf("Enter required option: ");
+    scanf("%d",&opt);
+    printf("\n\n**************************************************************************************************\n");
+    switch(opt)
+    {
+    case 1:
+        ptr = insert_user_view();
+        ptr->prev=NULL;
+        ptr->next=*s;
+        *s=ptr;
+        if(*s!=NULL)                 //for right right pointer
+            ptr->next->prev=ptr;     //for right right pointer
+        num+=1;
+        printf("\nThe person entry has been inserted successfully");
+        break;
+    case 2:
+        fflush(stdin);
+        char x[13];  int ins_opt, vp=1;
+        Doubly *t=NULL, *h=NULL;
+        ptr = *s;
+        printf("\n\nDo you want to insert before or after a node ? ");
+        printf("\nEnter :- 1. For Before \n\t 2. For After : ");
+        scanf("%d",&ins_opt);
+        switch(ins_opt)
+        {
+        case 1:
+            fflush(stdin);
+            JUNCTION1:
+            printf("\nEnter the Aadhaar number of person before which you want to insert : ");
+            gets(x);
+            vp = valid_id(x); if(vp==0){goto JUNCTION1;}
+            while(ptr!=NULL && strcmp(ptr->aadhar_id,x)!=0)
+                ptr = ptr->next;
+            if(ptr==NULL)
+                printf("\nThe Aadhaar number : %s does not exist",x);
+            else{
+                t = insert_user_view();
+                t->prev = ptr->prev;
+                t->next = ptr;
+                if(ptr==*s)
+                    *s = t;
+                else
+                    ptr->prev->next = t;
+                ptr->prev = t;
+                num+=1;
+                printf("\nThe person entry has been inserted successfully");
+            }
+            break;
+        case 2:
+            fflush(stdin);
+            JUNCTION2:
+            printf("\nEnter the Aadhaar number of person after which you want to insert : ");
+            gets(x);
+            vp = valid_id(x); if(vp==0){goto JUNCTION2;}
+            while(ptr!=NULL && strcmp(ptr->aadhar_id,x)!=0)
+                ptr = ptr->next;
+            if(ptr==NULL)
+                printf("\nThe Aadhaar number : %s does not exist",x);
+            else{
+                h = insert_user_view();
+                h->next = ptr-> next;
+                h->prev = ptr;
+                if(ptr==rp)
+                    rp = h;
+                else
+                    ptr->next->prev = h;
+                ptr->next = h;
+                num+=1;
+                printf("\nThe person entry has been inserted successfully");
+            }
+            break;
+        default:
+            printf("\nInvalid Option \nPlease enter correct option");
+            break;
+        }
+        break;
+    case 3:
+        ptr = insert_user_view();
+        ptr->next=NULL;
+        ptr->prev = rp;
+        rp=ptr;
+        if(rp!=NULL)                 // for left pointer
+            ptr->prev->next = ptr;   // for left pointer
+        num+=1;
+        printf("\nThe person entry has been inserted successfully");
+        break;
+    default:
+        printf("\nInvalid Option \nPlease enter correct option");
+        break;
+    }
+}
+Doubly* insert_user_view()
+{
+    Doubly *vision=NULL; int vp=0,hs=0;
+    vision = (Doubly*)malloc(sizeof(Doubly));
+    fflush(stdin);
+    printf("\n\n**************************************************************************************************\n");
+    printf("\nEnter Details of Person :- \n");
+    printf("\nEntry No.: %d",num+1);
+    JUNCTION:
+    printf("\nPerson Aadhaar Card number : ");
+    gets(vision->aadhar_id);
+    vp = valid_id(vision->aadhar_id); if(vp==0){goto JUNCTION;}
+    printf("\nPerson Name                : ");
+    strupr(gets(vision->person_name));
+    printf("\nPerson's Father Name       : ");
+    strupr(gets(vision->father_name));
+    printf("\nPerson's Mother Name       : ");
+    strupr(gets(vision->mother_name));
+    POINT:
+    printf("\nPerson's Date of Birth\n(Date format: dd/mm/yyyy or dd.mm.yyyy)     : ");
+    gets(vision->date_birth);
+    hs = valid_date(vision->date_birth); if(hs==0){goto POINT;}
+    printf("\nPerson's Gender\n(Male/Female)              : ");
+    strupr(gets(vision->gender));
+
+    return vision;
+}
+void delete_node(Doubly **s)
+{
+    int opt;
+    Doubly *ptr=*s;
+    printf("\n\n**************************************************************************************************\n");
+    printf("\n1. Delete person entry from beginning of Doubly linked list\n");
+    printf("2. Delete person entry from specific position in Doubly linked list\n");
+    printf("3. Delete person entry from end of Doubly linked list\n");
+    printf("Enter required option: ");
+    scanf("%d",&opt);
+    printf("\n\n**************************************************************************************************\n");
+    switch(opt)
+    {
+    case 1:
+        if(*s==NULL)
+            printf("\nDoubly linked list is empty");
+        else{
+            if(*s==rp){
+            *s = rp = NULL;
+            free(ptr);
+            }
+            else{
+                lp = lp->next;
+                lp->prev = NULL;
+                free(ptr);
+            }
+            num-=1;
+            printf("\nThe person entry has been deleted successfully");
+        }
+        break;
+    case 2:
+        fflush(stdin);
+        if(ptr==NULL)
+            printf("\nDoubly linked list is empty");
+        else{
+            char x[13];
+            printf("\nEnter Aadhaar number of person which you want to delete : ");
+            gets(x);
+            while(ptr!=NULL && strcmp(ptr->aadhar_id,x)!=0)
+                ptr = ptr->next;
+            if(ptr==NULL)
+                printf("\nThe Aadhaar number : %s does not exist",x);
+            else{
+                if(lp==rp)
+                    lp = rp = NULL;
+                else if(ptr->prev==NULL){
+                    ptr->next->prev = NULL;
+                    *s = ptr->next;
+                }
+                else if(ptr->next==NULL){
+                    ptr->prev->next = NULL;
+                    rp = ptr->prev;
+                }
+                else{
+                    ptr->next->prev = ptr->prev;
+                    ptr->prev->next = ptr->next;
+                }
+                free(ptr);
+                num-=1;
+                printf("\nThe person entry has been deleted successfully");
+            }
+        }
+        break;
+    case 3:
+        ptr = rp;
+        if(*s==NULL)
+            printf("\nDoubly linked list is empty");
+        else{
+            if(*s==rp){
+            *s = rp = NULL;
+            free(ptr);
+            }
+            else{
+                rp = rp->prev;
+                rp->next = NULL;
+                free(ptr);
+            }
+            num-=1;
+            printf("\nThe person entry has been deleted successfully");
+        }
+        break;
+    default:
+        printf("\nInvalid Option \n\tPlease enter correct option");
+        break;
+    }
+}
+void update_node(Doubly **s)
+{
+    Doubly *ptr=*s;
+    printf("\n\n**************************************************************************************************\n");
+    if(ptr==NULL)
+        printf("\nDoubly linked list is empty");
+    else{
+        fflush(stdin);
+        char cng[13];
+        JUNCTION:
+        printf("\nEnter Aadhaar number of person whose details you want to change : ");
+        gets(cng);
+        int vp = valid_id(cng); if(vp==0){goto JUNCTION;}
+        while(ptr!=NULL && strcmp(ptr->aadhar_id,cng)!=0)
+            ptr = ptr->next;
+        if(ptr==NULL)
+            printf("\nThe Aadhaar number : %s does not exist",cng);
+        else{
+            fflush(stdin);
+            int opt_up;
+            printf("\n1. Person name");
+            printf("\n2. Father name");
+            printf("\n3. Mother name");
+            printf("\n4. Date of birth");
+            printf("\n5. Gender");
+            printf("\nEnter the required option : ");
+            scanf("%d",&opt_up);
+            fflush(stdin);
+            char x[30];
+            switch(opt_up)
+            {
+            case 1:
+                printf("\nEnter person name : ");
+                strupr(gets(x));
+                strcpy(ptr->person_name,x);
+                printf("\nThe change has been successfully updated");
+                break;
+            case 2:
+                printf("\nEnter father name : ");
+                strupr(gets(x));
+                strcpy(ptr->father_name,x);
+                printf("\nThe change has been successfully updated");
+                break;
+            case 3:
+                printf("\nEnter mother name : ");
+                strupr(gets(x));
+                strcpy(ptr->mother_name,x);
+                printf("\nThe change has been successfully updated");
+                break;
+            case 4:
+                POINT:
+                printf("\nEnter date of birth\n(Date format: dd/mm/yyyy or dd.mm.yyyy) : ");
+                gets(x);
+                int hs = valid_date(x); if(hs==0){goto POINT;}
+                strcpy(ptr->date_birth,x);
+                printf("\nThe change has been successfully updated");
+                break;
+            case 5:
+                printf("\nEnter gender : ");
+                strupr(gets(x));
+                strcpy(ptr->gender,x);
+                printf("\nThe change has been successfully updated");
+                break;
+            default:
+                printf("\nInvalid option");
+                break;
+            }
+        }
+    }
+}
+void search_node(Doubly **s)
+{
+    printf("\n\n**************************************************************************************************\n");
+    if(*s==NULL)
+        printf("\nDoubly Linked List is empty");
+    else{
+        int opt_srk, deck=0, vp=0, hs=0;
+        Doubly *ptr=*s, *trav=NULL;
+        fflush(stdin);
+        printf("\n1. By Aadhaar number");
+        printf("\n2. By Gender");
+        printf("\n3. By Date of Birth");
+        printf("\n4. All History");
+        printf("\nEnter the required option : ");
+        scanf("%d",&opt_srk);
+        fflush(stdin);
+        char ch_id[13], ch_gen[15], ch_dat[12];
+        switch(opt_srk)
+        {
+        case 1:
+            REFER:
+            printf("\nEnter Aadhaar card number : ");
+            strupr(gets(ch_id));
+            vp = valid_id(ptr->aadhar_id); if(vp==0){goto REFER;}
+            while(ptr!=NULL){
+            if(strcmp(ptr->aadhar_id,ch_id)==0)
+                {   deck=1;
+                    printf("\nPerson Aadhaar number :  %s",ptr->aadhar_id);
+                    printf("\nPerson Name           :  %s",ptr->person_name);
+                    printf("\nFather Name           :  %s",ptr->father_name);
+                    printf("\nMother Name           :  %s",ptr->mother_name);
+                    printf("\nDate of Birth         :  %s",ptr->date_birth);
+                    printf("\nGender                :  %s",ptr->gender);
+                    search_list(ptr);
+                    printf("\n*****************************************************************");
+                    break;
+                }
+                ptr = ptr->next;}
+            if(deck!=1)
+                printf("\nValue that you have entered is not in doubly linked list");
+            break;
+        case 2:
+            printf("\nEnter:- Male/Female : ");
+            strupr(gets(ch_gen));
+            while(ptr!=NULL){
+            if(strcmp(ptr->gender,ch_gen)==0)
+                {   deck=1;
+                    printf("\nPerson Aadhaar number :  %s",ptr->aadhar_id);
+                    printf("\nPerson Name           :  %s",ptr->person_name);
+                    printf("\nFather Name           :  %s",ptr->father_name);
+                    printf("\nMother Name           :  %s",ptr->mother_name);
+                    search_list(ptr);
+                    printf("\n*****************************************************************");
+                }
+                ptr = ptr->next;}
+            if(deck!=1)
+                printf("\nValue that you have entered is not in doubly linked list");
+            break;
+        case 3:
+            MORE:
+            printf("\nEnter Date of Birth :\n(Date format: dd/mm/yyyy or dd.mm.yyyy) : ");
+            gets(ch_dat);
+            hs = valid_date(ptr->date_birth); if(hs==0){goto MORE;}
+            while(ptr!=NULL){
+            if(strcmp(ptr->date_birth,ch_dat)==0)
+                {   deck=1;
+                    printf("\nPerson Aadhaar number :  %s",ptr->aadhar_id);
+                    printf("\nPerson Name           :  %s",ptr->person_name);
+                    printf("\nFather Name           :  %s",ptr->father_name);
+                    printf("\nMother Name           :  %s",ptr->mother_name);
+                    search_list(ptr);
+                    printf("\n*****************************************************************");
+                }
+                ptr = ptr->next;}
+            if(deck!=1)
+                printf("\nValue that you have entered is not in doubly linked list");
+            break;
+        case 4:
+            printf("\n\n\t *** Search Record *** \n");
+            trav = temp_lp;
+            if(trav==NULL)
+                printf("\n\tThe search history is empty");
+            else{
+            int show=1;
+            while(trav!=NULL){
+                printf("\n\tPerson No.            :  %d",show);
+                printf("\n\tPerson Aadhaar number :  %s",trav->aadhar_id);
+                printf("\n\tPerson Name           :  %s",trav->person_name);
+                printf("\n\tFather Name           :  %s",trav->father_name);
+                printf("\n\tMother Name           :  %s",trav->mother_name);
+                printf("\n\tDate of Birth         :  %s",trav->date_birth);
+                printf("\n\tGender                :  %s",trav->gender);
+                printf("\n*****************************************************************");
+                trav = trav->next;
+                show+=1;
+            }}
+            break;
+        default:
+            printf("\nInvalid Option");
+            break;
+        }
+    }
+}
+void search_list(Doubly *filling)
+{
+    Doubly *find_node=NULL;
+   if(temp_var==1){
+        temp_lp = (Doubly*)malloc(sizeof(Doubly));
+        find_node = temp_lp;
+        find_node->prev = NULL;
+        temp_var+=1;
+    }
+    else{
+        find_node = temp_rp;
+        find_node->next  = (Doubly*)malloc(sizeof(Doubly));
+        find_node->next->prev = find_node;
+        find_node = find_node->next;
+    }
+    strcpy(find_node->aadhar_id,filling->aadhar_id);
+    strcpy(find_node->person_name,filling->person_name);
+    strcpy(find_node->father_name,filling->father_name);
+    strcpy(find_node->mother_name,filling->mother_name);
+    strcpy(find_node->date_birth,filling->date_birth);
+    strcpy(find_node->gender,filling->gender);
+    find_node->next = NULL;
+    temp_rp = find_node;
+}
+int sort_node(Doubly **s)
+{
+    Doubly *ptr=*s, *setting=NULL;
+    if(ptr==NULL){
+        printf("\nDoubly Linked List is empty");
+        return 0;
+        }
+    else{
+        while(ptr!=NULL){
+            setting = ptr->next;
+            while(setting!=NULL){
+                if(strcmp(ptr->aadhar_id,setting->aadhar_id)==1){
+                        Doubly *copying=NULL;
+                        copying = (Doubly*)malloc(sizeof(Doubly));
+
+                        strcpy(copying->aadhar_id,ptr->aadhar_id);
+                        strcpy(copying->person_name,ptr->person_name);
+                        strcpy(copying->father_name,ptr->father_name);
+                        strcpy(copying->mother_name,ptr->mother_name);
+                        strcpy(copying->date_birth,ptr->date_birth);
+                        strcpy(copying->gender,ptr->gender);
+
+                        strcpy(ptr->aadhar_id,setting->aadhar_id);
+                        strcpy(ptr->person_name,setting->person_name);
+                        strcpy(ptr->father_name,setting->father_name);
+                        strcpy(ptr->mother_name,setting->mother_name);
+                        strcpy(ptr->date_birth,setting->date_birth);
+                        strcpy(ptr->gender,setting->gender);
+
+                        strcpy(setting->aadhar_id,copying->aadhar_id);
+                        strcpy(setting->person_name,copying->person_name);
+                        strcpy(setting->father_name,copying->father_name);
+                        strcpy(setting->mother_name,copying->mother_name);
+                        strcpy(setting->date_birth,copying->date_birth);
+                        strcpy(setting->gender,copying->gender);
+                        free(copying);
+                    }
+                setting = setting->next;
+            }
+            ptr = ptr->next;
+        }
+        printf("\nDoubly Linked List has been sorted");
+        return 1;
+    }
+}
+void remove_duplicate(Doubly **s)
+{
+    Doubly *ptr=*s, *q=NULL;
+    while(ptr!=NULL && ptr->next!=NULL){
+        q=ptr->next;
+        while(q!=NULL){
+            if((strcmp(ptr->aadhar_id,q->aadhar_id)==0) || ((strcmp(ptr->person_name,q->person_name)==0) && (strcmp(ptr->father_name,q->father_name)==0) && (strcmp(ptr->mother_name,q->mother_name)==0) && (strcmp(ptr->date_birth,q->date_birth)==0) && (strcmp(ptr->gender,q->gender)==0)))
+            {
+                if(q==rp){               // for last
+                    q->prev->next = q->next;
+                    rp = q->prev;}
+                else{                    //for staring and in between
+                    ptr->next = q->next;
+                    q->next->prev = ptr;}
+                free(q);
+                num-=1;
+            }
+            q = q->next;
+        }
+        ptr = ptr->next;
+    }
+    printf("\n\nDuplicate entries will be removed automatically !!! ");
+}
+int valid_id(char value[])
+{
+    int len = strlen(value);
+    if(len!=12)
+    {
+        printf("\nPlease enter 12 digit number");
+        getch();
+        return 0;
+    }
+    else
+    {
+        for(int a=0;a<len;a++)
+        {
+            if(value[a]>=48 && value[a]<=57)
+                continue;
+            else
+            {
+                printf("\nPlease enter digits only");
+                getch();
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+int valid_date(char value[])
+{
+    int len = strlen(value);
+    if(len==10)
+    {
+        for(int d=0;d<len;d++)
+        {
+            if((value[d]>=48 && value[d]<=57) || (value[2]==46&&value[5]==46) || (value[2]==47&&value[5]==47))
+                continue;
+            else
+            {
+                printf("\nPlease enter date in valid format ");
+                getch();
+                return 0;
+            }
+        }
+        return 1;
+    }
+    else
+    {
+        printf("\nInvalid date added ");
+        getch();
+        return 0;
+    }
+}
