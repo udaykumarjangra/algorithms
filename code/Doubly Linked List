@@ -1,0 +1,261 @@
+#include <iostream>
+#include<malloc.h>
+#include<stdio.h>
+
+using namespace std;
+
+struct Double
+{
+    int aadhar;
+    char name[20];
+    char gender[10];
+    char f_name[20];
+    char m_name[20];
+    char dob[10];
+    struct Double *prev;
+    struct Double *next;
+};
+
+typedef struct Double node;
+node *lp=NULL;
+node *rp=NULL;
+int total=0;
+
+void createnode(node *ptr)
+{
+    char ch;
+    lp->prev=NULL;
+    do
+    {
+        cout<<"\n Enter aadhar number: ";
+        cin>>ptr->aadhar;
+        cout<<"\n Enter Name: ";
+        cin>>ptr->name;
+        cout<<"\n Enter Gender: ";
+        cin>>ptr->gender;
+        cout<<"\n Enter father's name: ";
+        cin>>ptr->f_name;
+        cout<<"\n Enter mother's name: ";
+        cin>>ptr->m_name;
+        cout<<"\n Enter date of birth: ";
+        cin>>ptr->dob;
+        cout<<"\n \n ";
+        cout<<"\n Do you want to add more elements?: ";
+        cin>>ch;
+        if(ch=='y')
+        {
+            ptr->next=(node*)malloc(sizeof(node));
+            ptr->next->prev=ptr;
+            ptr=ptr->next;
+        }
+        total++;
+    }while(ch=='y');
+    ptr->next=NULL;
+    cout<<"\n \n The total number of nodes are: "<<total;
+    rp=ptr;
+}
+
+void insertnode(node *ptr)
+{
+    int position;
+    node *newnode;
+    newnode=(node*)malloc(sizeof(node));
+    cout<<"\n Enter the position at which you want to insert: ";
+    cin>>position;
+    cout<<"\n Enter aadhar number: ";
+    cin>>newnode->aadhar;
+    cout<<"\n Enter Name: ";
+    cin>>newnode->name;
+    cout<<"\n Enter Gender: ";
+    cin>>newnode->gender;
+    cout<<"\n Enter father's name: ";
+    cin>>newnode->f_name;
+    cout<<"\n Enter mother's name: ";
+    cin>>newnode->m_name;
+    cout<<"\n Enter date of birth: ";
+    cin>>newnode->dob;
+    if(position==1)
+    {
+       newnode->next=lp;
+       lp->prev=newnode;
+       newnode->prev=NULL;
+       lp=newnode;
+    }
+    else if(position>1 && position<=total)
+    {
+        for(int i=1;i<position;i++)
+        {
+            ptr=ptr->next;
+        }
+        ptr->prev->next=newnode;
+        newnode->prev=ptr->prev;
+        newnode->next=ptr;
+		ptr->prev=newnode;
+    }
+    else if(position==total+1)
+    {
+        rp->next=newnode;
+        newnode->prev=rp;
+        newnode->next=NULL;
+        rp=newnode;
+    }
+    total++;
+    cout<<"\n Total nodes are: "<<total;
+
+}
+
+void deletenode(node *ptr)
+{
+    node *temp=NULL;
+    int position;
+    cout<<"\n Enter the position of the record you want to delete: ";
+    cin>>position;
+    if(position>total)
+    {
+        cout<<"\n Invalid input";
+    }
+    else if(position==1)
+    {
+        ptr=lp;
+        lp=ptr->next;
+        lp->prev=NULL;
+        free(ptr);
+    }
+    else if(position>1 && position<total)
+    {
+        for(int i=1;i<position;i++)
+        {
+            temp=ptr;
+            ptr=ptr->next;
+        }
+
+        temp->next=ptr->next;
+        ptr->next->prev=temp;
+        free(ptr);
+    }
+    else if(position=total)
+    {
+        while(ptr!=NULL)
+        {
+            ptr=ptr->next;
+        }
+        ptr=rp;
+        rp=ptr->prev;
+        rp->next=NULL;
+        free(ptr);
+    }
+}
+
+void updatenode(node *ptr)
+{
+   int taadhar;
+   cout<<"\n Enter the aadhar of the record you want to update: ";
+   cin>>taadhar;
+   while(ptr->aadhar!=taadhar && ptr!=NULL)
+   {
+        ptr=ptr->next;
+        cout<<ptr;
+   }
+
+    if(ptr==NULL)
+    {
+        cout<<"\n Invalid";
+    }
+    else if(ptr->aadhar==taadhar)
+       {
+           cout<<"\n Enter aadhar number: ";
+            cin>>ptr->aadhar;
+            cout<<"\n Enter Name: ";
+            cin>>ptr->name;
+            cout<<"\n Enter Gender: ";
+            cin>>ptr->gender;
+            cout<<"\n Enter father's name: ";
+            cin>>ptr->f_name;
+            cout<<"\n Enter mother's name: ";
+            cin>>ptr->m_name;
+            cout<<"\n Enter date of birth: ";
+            cin>>ptr->dob;
+            cout<<"\n \n ";
+       }
+
+}
+
+void findnode(node *ptr)
+{
+    int faadhar;
+    cout<<"\n Enter the aadhar of the record you want to search: ";
+    cin>>faadhar;
+    while(ptr->aadhar!=faadhar && ptr!=NULL)
+    {
+
+		ptr=ptr->next;
+		cout<<"\n"<<ptr;
+    }
+    if(ptr==NULL)
+    {
+        cout<<"\n Record not found\n";
+    }
+    else
+    {
+        cout<<"\n Record found. Here are the details: ";
+        cout<<"\n";
+        cout<<"\n Aadhar: "<<ptr->aadhar;
+        cout<<"\n Name: "<<ptr->name;
+        cout<<"\n Gender: "<<ptr->gender;
+        cout<<"\n Father's name: "<<ptr->f_name;
+        cout<<"\n Mother's name: "<<ptr->m_name;
+        cout<<"\n Date of birth: "<<ptr->dob;
+        cout<<"\n \n ";
+    }
+}
+void displaynode(node *ptr)
+{
+    while(ptr!=NULL)
+    {
+        cout<<"\n Aadhar: "<<ptr->aadhar;
+        cout<<"\n Name: "<<ptr->name;
+        cout<<"\n Gender: "<<ptr->gender;
+        cout<<"\n Father's name: "<<ptr->f_name;
+        cout<<"\n Mother's name: "<<ptr->m_name;
+        cout<<"\n Date of birth: "<<ptr->dob;
+        cout<<"\n \n ";
+        ptr=ptr->next;
+    }
+}
+int main()
+{
+    lp=(node*)malloc(sizeof(node));
+    int ch;
+    char choice;
+    cout<<"\n Doubly linked list\n \n ";
+    createnode(lp);
+    do{
+    cout<<"\n \n ";
+    cout<<"\n Enter the operation you want to perform";
+    cout<<"\n 1) Insertion";
+    cout<<"\n 2) Deletion";
+    cout<<"\n 3) Update";
+    cout<<"\n 4) Search";
+    cout<<"\n 5) Display";
+    cout<<"\n Enter the choice: ";
+    cin>>ch;
+    switch(ch)
+    {
+        case 1: insertnode(lp);
+                break;
+        case 2: deletenode(lp);
+                break;
+        case 3: updatenode(lp);
+                break;
+        case 4: findnode(lp);
+                break;
+        case 5: displaynode(lp);
+                break;
+        default : cout<<"\n Invalid input";
+    }
+    cout<<"\n Do you want to perform more operations?: ";
+    cin>>choice;
+    }while(choice=='y');
+
+    return 0;
+}
