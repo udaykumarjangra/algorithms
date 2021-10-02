@@ -1,0 +1,50 @@
+const puppeteer = require('puppeteer')
+
+const fs = require("fs")
+const schedule = require("node-schedule")
+
+async function getNewsTitles(page) {
+    await page.goto("https://www.thetimes.co.uk/?region=global");
+    return (results = await page.evaluate(() => {
+  const allTitles = document.querySelectorAll(".Item-headline a", {waitUntil: 'networkidle2'});
+      return Array.from(allTitles)
+        .slice(0, 10)
+        .map(title => {
+          let res = {
+            title: title.textContent,
+            link: title["href"]
+          };
+    
+        return res;
+        
+        });
+     }));
+  }
+
+const gatherNewsItems = async() =>{
+    const browser = await puppeteer.launch({
+        headless: false
+    });
+    const page = await browser.newPage();
+    const newTitles = await getNewsTitles(page);
+
+    fs.writeFile(
+        "newsitems.json",
+        JSON.stringify(newTitles),
+        "utf-8",
+        (err,data) => {
+            if(err){
+                console.log(err);
+            }
+            else{
+                console.log("created")
+            }
+        }
+    )
+    await browser.close();
+};
+
+schedule.scheduleJob("1 * * * * *",function(){
+console.log("news gathering started")
+gatherNewsItems();
+})
