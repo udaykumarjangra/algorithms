@@ -1,0 +1,6 @@
+def find_missing(ip):
+  total_sum = sum(ip)
+  
+  n = len(ip) + 1
+  series_sum = (n * ( n + 1 ) ) / 2
+  return series_sum - total_sum
