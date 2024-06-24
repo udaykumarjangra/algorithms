@@ -1,0 +1,76 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <conio.h>
+#include <windows.h>
+using namespace std;
+#define size 100
+int largest_no(int ar[], int n);
+int radix_sort(int ar[], int n);
+
+int main()
+{
+	int ar[size], i, n;
+	cout<<"\n Enter the number of elements in the aray: ";
+	cin>>n;
+	cout<<"\n Enter the elements of the aray: ";
+	for(i=0;i<n;i++)
+		{
+			cin>>ar[i];
+		}
+	radix_sort(ar, n);
+	cout<<"\n The sorted aray is: \n";
+	for(i=0;i<n;i++)
+		cout<<ar[i]<<"\t";
+	getch();
+	return 0;
+}
+
+int largest_no(int ar[], int n)
+{
+ 	int largest=ar[0], i;
+ 	for(i=1;i<n;i++)
+ 		{
+ 			if(ar[i]>largest)
+ 				largest = ar[i];
+ 		}
+ 		return largest;
+}
+
+int radix_sort(int ar[], int n)
+{
+	int bucket[size][size], bucket_count[size];
+ 	int i, j, k, remainder, digits=0, divisor=1, largest, pass;
+ 	largest = largest_no(ar, n);
+ 	while(largest>0)
+ 		{
+ 			digits++;
+ 			largest/=10;
+ 		}
+ 	for(pass=0;pass<digits;pass++) // Initialize the buckets 
+ 		{
+ 			for(i=0;i<n;i++)  
+ 				bucket_count[i]=0;
+ 			for(i=0;i<n;i++)
+ 				{   // sort the numbers according to the digit at passth place   
+ 					remainder = (ar[i]/divisor)%10;
+ 					bucket[remainder][bucket_count[remainder]] = ar[i];
+ 					bucket_count[remainder] += 1;
+ 				}
+ 		// collect the numbers after PASS pass  
+ 			i=0;
+ 			for(k=0;k<n;k++)
+ 				{ 
+ 					for(j=0;j<bucket_count[k];j++)
+ 						{
+ 							ar[i] = bucket[k][j];
+ 							i++;
+ 						}
+ 				}
+ 			divisor *= 10;
+ 		}
+ 		
+ 	return 0;
+}
+
+
